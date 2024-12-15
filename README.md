@@ -185,3 +185,56 @@ exec('ls -la', (error, stdout, stderr) => {
 ### **Summary**
 - The `child_process` module is a powerful tool for running external commands and managing processes in Node.js.
 - The `exec` method is useful for quick shell commands where the full output is needed, but it should be used cautiously to avoid memory issues and security risks.
+
+
+The `recursive: true` option in `fs.mkdirSync` (and its asynchronous counterpart `fs.mkdir`) is used to ensure that the directory and all its parent directories (if they don't exist) are created automatically. Without this option, the function would fail if any parent directory in the path doesn't exist.
+
+### **Why Use `recursive: true`?**
+1. **Create Nested Directories:**
+   - Suppose you want to create a directory `path/to/output`. If `path` or `path/to` doesn't exist, the call will fail unless `recursive: true` is specified.
+   - With `recursive: true`, Node.js will create all intermediate directories in the path that don't already exist.
+
+2. **Avoid Errors:**
+   - Without `recursive: true`, you would have to manually check and create each level of the directory tree, leading to more complex code.
+
+### **Example:**
+
+#### Without `recursive: true`
+```javascript
+const fs = require('fs');
+const path = 'nested/dir/structure';
+
+if (!fs.existsSync('nested')) {
+  fs.mkdirSync('nested');
+}
+if (!fs.existsSync('nested/dir')) {
+  fs.mkdirSync('nested/dir');
+}
+if (!fs.existsSync('nested/dir/structure')) {
+  fs.mkdirSync('nested/dir/structure');
+}
+```
+
+#### With `recursive: true`
+```javascript
+const fs = require('fs');
+const path = 'nested/dir/structure';
+
+if (!fs.existsSync(path)) {
+  fs.mkdirSync(path, { recursive: true });
+}
+```
+
+### **Behavior**
+- **When `recursive: true`:**
+  - If the directory already exists, no error is thrown.
+  - If intermediate directories are missing, they are created automatically.
+
+- **When `recursive: false` (default behavior):**
+  - If any part of the path doesn't exist, an error will be thrown:
+    ```
+    Error: ENOENT: no such file or directory
+    ```
+
+### **Best Practice**
+Always use `recursive: true` when working with potentially nested paths unless you are certain all parent directories already exist. It simplifies the code and avoids unnecessary checks.
