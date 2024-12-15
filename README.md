@@ -55,3 +55,133 @@ ffmpeg -i input_video.mp4 \
 - Efficient Bandwidth Utilization: Loads only necessary video segments
 
 The workflow ensures that users receive the best possible video streaming experience by dynamically adapting to their network and device capabilities.
+
+The `child_process` module in Node.js provides functionality to spawn and manage child processes, enabling the execution of external commands or scripts from a Node.js application. It's particularly useful for tasks like running shell commands, starting other programs, or interacting with non-JavaScript scripts or binaries.
+
+### **Key Features of `child_process`**
+- Allows interaction with the operating system and external programs.
+- Can run shell commands or execute programs in parallel to the Node.js process.
+- Supports both synchronous and asynchronous execution.
+
+---
+
+### **What is `exec` in `child_process`?**
+The `exec` method is part of the `child_process` module and is used to run shell commands and return the output as a string. It spawns a shell, executes the provided command, and buffers the output for you.
+
+#### **Key Characteristics of `exec`:**
+- **Uses a Shell:** It runs the command in a shell, which allows you to use shell syntax like pipes (`|`), redirection (`>`, `>>`), and environment variable manipulation.
+- **Output Buffers:** Captures the standard output (`stdout`) and standard error (`stderr`) of the command in memory.
+- **Asynchronous:** By default, `exec` is non-blocking, and it uses callbacks to handle results.
+
+---
+
+### **Syntax of `exec`**
+```javascript
+const { exec } = require('child_process');
+
+exec(command, options, callback);
+```
+
+- **`command`**: A string containing the shell command to execute.
+- **`options`** (optional): An object with additional options like `cwd` (current working directory) or `env` (environment variables).
+- **`callback`**: A function that is invoked when the command execution is complete.
+
+---
+
+### **Example: Using `exec`**
+```javascript
+const { exec } = require('child_process');
+
+// Running a shell command
+exec('ls -la', (error, stdout, stderr) => {
+  if (error) {
+    console.error(`Error: ${error.message}`);
+    return;
+  }
+
+  if (stderr) {
+    console.error(`Standard Error: ${stderr}`);
+    return;
+  }
+
+  console.log(`Standard Output:\n${stdout}`);
+});
+```
+
+#### Output:
+- If successful, the `stdout` variable contains the result of the `ls -la` command.
+- If an error occurs, `error` and/or `stderr` will provide details.
+
+---
+
+### **Comparison with Other Methods in `child_process`**
+
+| Method       | Description                                                                 | Use Case                                                                                      |
+|--------------|-----------------------------------------------------------------------------|-----------------------------------------------------------------------------------------------|
+| `exec`       | Runs a shell command and buffers the output as a string.                   | Use when you need the full output (e.g., running `ls` and reading the result).                |
+| `spawn`      | Spawns a new process without a shell, providing streams for stdout/stderr. | Use when you need continuous interaction with the process or real-time data from stdout.      |
+| `execFile`   | Runs an executable file directly without a shell.                          | Use when you don’t need shell features and want faster execution with fewer security risks.   |
+| `fork`       | Creates a new Node.js process to run a module.                             | Use for creating multiple processes of Node.js scripts for parallelism or isolated workloads. |
+
+---
+
+### **When to Use `exec`**
+- Running shell commands that involve simple outputs, like `ls`, `pwd`, or `grep`.
+- Tasks where you don’t need to stream data in real-time.
+- Quick, one-off command-line interactions.
+
+---
+
+### **Common Use Cases**
+1. **System Administration Tasks:**
+   ```javascript
+   exec('uptime', (err, stdout) => {
+     if (err) throw err;
+     console.log(`System Uptime: ${stdout}`);
+   });
+   ```
+
+2. **Automation Scripts:**
+   ```javascript
+   exec('git pull origin main', (err, stdout, stderr) => {
+     if (err) {
+       console.error(`Error pulling changes: ${stderr}`);
+       return;
+     }
+     console.log(`Git Output: ${stdout}`);
+   });
+   ```
+
+3. **Dynamic Command Execution:**
+   ```javascript
+   const userInput = 'ls'; // Assume this comes from the user
+   exec(`${userInput}`, (err, stdout) => {
+     if (err) throw err;
+     console.log(stdout);
+   });
+   ```
+
+---
+
+### **Limitations of `exec`**
+1. **Output Size Limitation:**
+   - The `exec` method buffers the entire output in memory. If the output exceeds the default buffer size (200 KB), the process might crash.
+   - This can be adjusted using the `maxBuffer` option:
+     ```javascript
+     exec('some-command', { maxBuffer: 1024 * 1024 }, (err, stdout) => {
+       if (err) throw err;
+       console.log(stdout);
+     });
+     ```
+
+2. **Security Risks:**
+   - Using `exec` with user input can lead to shell injection vulnerabilities. Always sanitize input before executing commands.
+
+3. **Shell Overhead:**
+   - Since `exec` spawns a shell, it has more overhead than `spawn` or `execFile`.
+
+---
+
+### **Summary**
+- The `child_process` module is a powerful tool for running external commands and managing processes in Node.js.
+- The `exec` method is useful for quick shell commands where the full output is needed, but it should be used cautiously to avoid memory issues and security risks.
