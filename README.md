@@ -17,51 +17,7 @@ User uploads a video.
 The backend processes the video into HLS format using FFmpeg.
 The frontend requests the video stream and plays it.
 
-I'll provide a detailed explanation of the backend video processing with a focus on FFmpeg and HLS conversion.
 
-
-
-```svg
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 400">
-  <!-- Background -->
-  <rect width="600" height="400" fill="#f0f0f0"/>
-  
-  <!-- Title -->
-  <text x="300" y="40" text-anchor="middle" font-size="20" font-weight="bold">Backend Video Processing Workflow</text>
-  
-  <!-- Original Video Input -->
-  <rect x="50" y="100" width="150" height="80" fill="#4CAF50" rx="10"/>
-  <text x="125" y="140" text-anchor="middle" fill="white">Original Video File</text>
-  
-  <!-- FFmpeg Processing -->
-  <rect x="250" y="100" width="150" height="80" fill="#2196F3" rx="10"/>
-  <text x="325" y="130" text-anchor="middle" fill="white">FFmpeg</text>
-  <text x="325" y="160" text-anchor="middle" fill="white">Transcoding</text>
-  
-  <!-- Arrows -->
-  <path d="M200,140 L250,140" stroke="black" stroke-width="2" marker-end="url(#arrowhead)"/>
-  <path d="M400,140 L450,140" stroke="black" stroke-width="2" marker-end="url(#arrowhead)"/>
-  
-  <!-- HLS Output -->
-  <rect x="450" y="100" width="150" height="80" fill="#FF9800" rx="10"/>
-  <text x="525" y="130" text-anchor="middle" fill="white">HLS Output</text>
-  <text x="525" y="160" text-anchor="middle" fill="white">.m3u8 + .ts files</text>
-  
-  <!-- Processing Details -->
-  <text x="300" y="250" text-anchor="middle" font-size="16">Key Transcoding Steps:</text>
-  <text x="300" y="280" text-anchor="middle">1. Video Encoding</text>
-  <text x="300" y="310" text-anchor="middle">2. Adaptive Bitrate Streaming</text>
-  <text x="300" y="340" text-anchor="middle">3. Segmentation into .ts chunks</text>
-  
-  <!-- Arrowhead marker -->
-  <defs>
-    <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
-      <polygon points="0 0, 10 3.5, 0 7" fill="black"/>
-    </marker>
-  </defs>
-</svg>
-
-```
 
 Let me break down the backend video processing workflow in more detail:
 
